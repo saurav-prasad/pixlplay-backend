@@ -14,7 +14,7 @@ app.use(express.json());
 
 // available routes
 app.use('/auth', require('./routes/auth'));
-
+app.use('/canvas', require('./routes/canvas'));
 
 // default port
 app.listen(port, (req, res) => {
