@@ -89,13 +89,13 @@ router.get('/getcanvas/:canvasid', async (req, res) => {
         const fetchedCanvas = await canvasSchema.findById(canvasId)
         // check if fetchedCanvas exists
         if (!fetchedCanvas) {
-            return res.status(404).json({ success, message: "Canvas not found" })
+            return res.status(405).json({ success, message: "Canvas not found" })
         }
         success = true
         res.send({
             success, message: "Canvas fetched successfully", data: {
                 id: fetchedCanvas.id,
-                fetchedCanvas: fetchedCanvas.fetchedCanvas,
+                canvas: fetchedCanvas.canvas,
                 name: fetchedCanvas.name,
                 userId: fetchedCanvas.userId,
                 timestamp: fetchedCanvas.timestamp
@@ -188,6 +188,11 @@ router.post('/updatecanvas/:canvasid', fetchUser, async (req, res) => {
         const userId = req.userId
         const canvasId = req.params.canvasid
         const { canvas } = req.body
+        // check if canvas is valid
+        if (canvas.length <= 0) {
+            return res.status(404).json({ success, message: "Canvas is empty" })
+        }
+
         // check if canvas id exists
         if (!canvasId) {
             return res.status(404).json({ success, message: "Canvas id required" })
