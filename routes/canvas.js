@@ -188,10 +188,6 @@ router.post('/updatecanvas/:canvasid', fetchUser, async (req, res) => {
         const userId = req.userId
         const canvasId = req.params.canvasid
         const { canvas } = req.body
-        // check if canvas is valid
-        if (canvas.length <= 0) {
-            return res.status(404).json({ success, message: "Canvas is empty" })
-        }
 
         // check if canvas id exists
         if (!canvasId) {
