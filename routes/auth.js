@@ -140,4 +140,56 @@ router.get('/fetchuser', fetchUser,
     }
 )
 
+// update user - POST request
+router.post('/updateuser', fetchUser, [
+    body('username', "Username should be at least 3 characters long").isLength({ min: 3 }),
+    body('username', 'Username should not be greater than 15 characters').isLength({ max: 15 }),
+    body('email', "Invalid email").isEmail(),
+],
+    async (req, res) => {
+        let success = false;
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ success, message: errors.array()[0].msg })
+        }
+        try {
+            const { username, email, phone, name } = req.body
+
+            // verify user
+            const verifyUser = await userSchema.findById(req.userId)
+
+            // check if username already exists
+            if (verifyUser.username !== username) {
+                const checkUser = await userSchema.findOne({ username })
+
+                if (checkUser) {
+                    return res.status(400).json({ success, message: `Username already exists` })
+                }
+            }
+            // check if email already exists
+            if (verifyUser.email !== email) {
+                const checkUser = await userSchema.findOne({ email })
+                if (checkUser) {
+                    return res.status(400).json({ success, message: `Email already exists` })
+                }
+            }
+
+            // update the user
+            verifyUser.username = username
+            verifyUser.email = email
+            verifyUser.name = name
+            verifyUser.phone = phone
+            const updatedUser = await verifyUser.save()
+            const { _id: _, ...rest } = updatedUser._doc
+            // console.log({ id: updatedUser.id, ...rest })
+            success = true
+            res.send({ success, message: "Profile updated Successfully", data: { id: updatedUser.id, ...rest } })
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({ success, message: "Internal server error" })
+        }
+    }
+)
+
 module.exports = router;
