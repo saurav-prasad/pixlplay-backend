@@ -123,7 +123,7 @@ router.get('/getallcanvases', fetchUser, async (req, res) => {
             return res.json({ success, message: "Canvases not found" })
         }
 
-        console.log(fetchedCanvases)
+        // console.log(fetchedCanvases)
         success = true
         res.send({
             success, message: "Canvases fetched successfully", data: fetchedCanvases

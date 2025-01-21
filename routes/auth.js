@@ -158,10 +158,15 @@ router.post('/updateuser', fetchUser, [
             // verify user
             const verifyUser = await userSchema.findById(req.userId)
 
+            // Compare the fields
+            const fieldsToCompare = ['username', 'email', 'phone', 'name'];
+            if (areObjectsEqual(verifyUser, req.body, fieldsToCompare)) {
+                return res.status(400).json({ success, message: "No changes detected - cannot update." });
+            }
+
             // check if username already exists
             if (verifyUser.username !== username) {
                 const checkUser = await userSchema.findOne({ username })
-
                 if (checkUser) {
                     return res.status(400).json({ success, message: `Username already exists` })
                 }
@@ -193,3 +198,13 @@ router.post('/updateuser', fetchUser, [
 )
 
 module.exports = router;
+
+
+function areObjectsEqual(obj1, obj2, fields){
+    for (const field of fields) {
+        if (obj1[field] !== obj2[field]) {
+            return false;
+        }
+    }
+    return true;
+};
