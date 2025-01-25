@@ -154,9 +154,13 @@ router.post('/updateuser', fetchUser, [
         }
         try {
             const { username, email, phone, name } = req.body
+            const userId = req.userId
 
+            if (userId === "679480c8aaeb04197da1cdda" || userId === "677e7e8efbea9b657978788b") {
+                return res.status(400).json({ success, message: "Test user credentials cannot be edited" })
+            }
             // verify user
-            const verifyUser = await userSchema.findById(req.userId)
+            const verifyUser = await userSchema.findById(userId)
 
             // Compare the fields
             const fieldsToCompare = ['username', 'email', 'phone', 'name'];
@@ -200,7 +204,7 @@ router.post('/updateuser', fetchUser, [
 module.exports = router;
 
 
-function areObjectsEqual(obj1, obj2, fields){
+function areObjectsEqual(obj1, obj2, fields) {
     for (const field of fields) {
         if (obj1[field] !== obj2[field]) {
             return false;
