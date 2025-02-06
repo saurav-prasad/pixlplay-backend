@@ -11,7 +11,7 @@ const fetchUser = (req, res, next) => {
     }
     try {
         const data = jwt.verify(token, jwtSecret)
-        req.userId = data.userId
+        req.userId = data.userId // map usedId to req object
         next()
     } catch (error) {
         console.log(error)

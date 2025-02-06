@@ -117,6 +117,7 @@ router.get('/fetchuser', fetchUser,
         try {
             const userId = req.userId
 
+            // check user exists or not
             const checkUser = await userSchema.findById(userId)
             if (!checkUser) {
                 return res.status(400).json({ success, message: "User not found" })
@@ -156,6 +157,7 @@ router.post('/updateuser', fetchUser, [
             const { username, email, phone, name } = req.body
             const userId = req.userId
 
+            // check test user userid - cannot be edited
             if (userId === "679480c8aaeb04197da1cdda" || userId === "677e7e8efbea9b657978788b") {
                 return res.status(400).json({ success, message: "Test user credentials cannot be edited" })
             }
@@ -205,6 +207,7 @@ module.exports = router;
 
 
 function areObjectsEqual(obj1, obj2, fields) {
+    // function to check if there is any changes in the updation fields
     for (const field of fields) {
         if (obj1[field] !== obj2[field]) {
             return false;
